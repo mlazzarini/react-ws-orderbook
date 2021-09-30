@@ -1,4 +1,9 @@
-import { fillTotals, removeOrder, addOrUpdateOrder } from './index'
+import {
+  fillTotals,
+  removeOrder,
+  addOrUpdateAsk,
+  addOrUpdateBid,
+} from './index'
 
 describe('test fillTotals', () => {
   it('empty array', () => {
@@ -44,7 +49,7 @@ describe('test removeOrder', () => {
   })
 })
 
-describe('test addOrUpdateOrder', () => {
+describe('test addOrUpdateAsk', () => {
   it('level added at the end', () => {
     const orders = [
       [15, 5],
@@ -52,7 +57,7 @@ describe('test addOrUpdateOrder', () => {
       [12, 1],
       [10, 2],
     ]
-    addOrUpdateOrder(orders, [9, 1])
+    addOrUpdateAsk(orders, [9, 1])
     expect(orders).toEqual([
       [15, 5],
       [13, 1],
@@ -68,7 +73,7 @@ describe('test addOrUpdateOrder', () => {
       [12, 1],
       [10, 2],
     ]
-    addOrUpdateOrder(orders, [16, 2])
+    addOrUpdateAsk(orders, [16, 2])
     expect(orders).toEqual([
       [16, 2],
       [15, 5],
@@ -84,7 +89,7 @@ describe('test addOrUpdateOrder', () => {
       [12, 1],
       [10, 2],
     ]
-    addOrUpdateOrder(orders, [14, 2])
+    addOrUpdateAsk(orders, [14, 2])
     expect(orders).toEqual([
       [15, 5],
       [14, 2],
@@ -100,12 +105,78 @@ describe('test addOrUpdateOrder', () => {
       [12, 1],
       [10, 2],
     ]
-    addOrUpdateOrder(orders, [13, 7])
+    addOrUpdateAsk(orders, [13, 7])
     expect(orders).toEqual([
       [15, 5],
       [13, 7],
       [12, 1],
       [10, 2],
+    ])
+  })
+})
+
+describe('test addOrUpdateBid', () => {
+  it('level added at the beginning', () => {
+    const orders = [
+      [10, 2],
+      [12, 1],
+      [13, 1],
+      [15, 5],
+    ]
+    addOrUpdateBid(orders, [9, 1])
+    expect(orders).toEqual([
+      [9, 1],
+      [10, 2],
+      [12, 1],
+      [13, 1],
+      [15, 5],
+    ])
+  })
+  it('level added at the end', () => {
+    const orders = [
+      [10, 2],
+      [12, 1],
+      [13, 1],
+      [15, 5],
+    ]
+    addOrUpdateBid(orders, [16, 2])
+    expect(orders).toEqual([
+      [10, 2],
+      [12, 1],
+      [13, 1],
+      [15, 5],
+      [16, 2],
+    ])
+  })
+  it('level added in the middle', () => {
+    const orders = [
+      [10, 2],
+      [12, 1],
+      [13, 1],
+      [15, 5],
+    ]
+    addOrUpdateBid(orders, [14, 2])
+    expect(orders).toEqual([
+      [10, 2],
+      [12, 1],
+      [13, 1],
+      [14, 2],
+      [15, 5],
+    ])
+  })
+  it('level found and updated', () => {
+    const orders = [
+      [10, 2],
+      [12, 1],
+      [13, 1],
+      [15, 5],
+    ]
+    addOrUpdateBid(orders, [13, 7])
+    expect(orders).toEqual([
+      [10, 2],
+      [12, 1],
+      [13, 7],
+      [15, 5],
     ])
   })
 })

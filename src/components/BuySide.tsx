@@ -1,8 +1,7 @@
 import { FunctionComponent, useState, useEffect, useContext } from 'react'
 import styled from 'styled-components'
 import contextWebSocket from '../websocketManager/createContext'
-import { fillTotals, mergeAsks, sortAsks } from '../core'
-import { Asks } from '../core/types'
+import { fillTotals, mergeDelta, sortAsks } from '../core'
 
 const { WebSocketContext } = contextWebSocket
 
@@ -25,28 +24,24 @@ const PrizeCell = styled.td`
 export const BuySide: FunctionComponent = () => {
   const { snapshot, delta } = useContext(WebSocketContext)
   const [totals, setTotals] = useState(Array(25).fill(0))
-  // TODO: move ordering of the snapshot to the websocket context provider
-  const [orderedAsks, setOrderedAsks] = useState<Asks>(Array(25).fill([0, 0]))
 
   useEffect(() => {
     if (snapshot.asks) {
-      const sorted = sortAsks(snapshot.asks)
-      setOrderedAsks(sorted)
+      sortAsks(snapshot.asks)
 
       // Update totals
-      const sizes = sorted.map((askLine: any) => askLine[1])
+      const sizes = snapshot.asks.map((askLine: any) => askLine[1])
       const totals = fillTotals(sizes)
       setTotals(totals)
     }
-  }, [snapshot])
+  }, [snapshot.asks])
 
   useEffect(() => {
     if (delta.asks?.length > 0) {
-      const updatedAsks = mergeAsks(orderedAsks, delta)
-      setOrderedAsks(updatedAsks)
+      mergeDelta(snapshot.asks, delta, 'asks')
 
       // Update totals
-      const sizes = updatedAsks.map((askLine: any) => askLine[1])
+      const sizes = snapshot.asks.map((askLine: any) => askLine[1])
       const totals = fillTotals(sizes)
       setTotals(totals)
     }
@@ -62,13 +57,19 @@ export const BuySide: FunctionComponent = () => {
         </tr>
       </thead>
       <tbody>
-        {orderedAsks.slice(0, 25).map((askLine, index) => (
-          <tr key={`ask-${index}`}>
-            <StyledCell>{totals[index]}</StyledCell>
-            <StyledCell>{askLine[1]}</StyledCell>
-            <PrizeCell>{askLine[0]}</PrizeCell>
-          </tr>
-        ))}
+        {snapshot.asks ? (
+          snapshot.asks.slice(0, 25).map((askLine: number[], index: number) => (
+            <tr key={`ask-${index}`}>
+              <StyledCell>{totals[index]}</StyledCell>
+              <StyledCell>{askLine[1]}</StyledCell>
+              <PrizeCell>{askLine[0]}</PrizeCell>
+            </tr>
+          ))
+        ) : (
+          <div>
+            <h3>Loading...</h3>
+          </div>
+        )}
       </tbody>
     </StyledTable>
   )

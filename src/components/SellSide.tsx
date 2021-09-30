@@ -1,8 +1,7 @@
 import { FunctionComponent, useState, useEffect, useContext } from 'react'
 import styled from 'styled-components'
 import contextWebSocket from '../websocketManager/createContext'
-import { fillTotals, mergeAsks } from '../core'
-import { Bids } from '../core/types'
+import { fillTotals, mergeDelta, sortBids } from '../core'
 
 const { WebSocketContext } = contextWebSocket
 
@@ -25,26 +24,24 @@ const PrizeCell = styled.td`
 export const SellSide: FunctionComponent = () => {
   const { snapshot, delta } = useContext(WebSocketContext)
   const [totals, setTotals] = useState(Array(25).fill(0))
-  const [bids, setBids] = useState<Bids>(Array(25).fill([0, 0]))
 
   useEffect(() => {
     if (snapshot.bids) {
-      setBids(snapshot.bids)
+      sortBids(snapshot.bids)
 
       // Update totals
       const sizes = snapshot.bids.map((bidLine: any) => bidLine[1])
       const totals = fillTotals(sizes)
       setTotals(totals)
     }
-  }, [snapshot])
+  }, [snapshot.bids])
 
   useEffect(() => {
     if (delta.bids?.length > 0) {
-      const updatedBids = mergeAsks(bids, delta)
-      setBids(updatedBids)
+      mergeDelta(snapshot.bids, delta, 'bids')
 
       // Update totals
-      const sizes = updatedBids.map((bidLine: any) => bidLine[1])
+      const sizes = snapshot.bids.map((bidLine: any) => bidLine[1])
       const totals = fillTotals(sizes)
       setTotals(totals)
     }
@@ -60,13 +57,19 @@ export const SellSide: FunctionComponent = () => {
         </tr>
       </thead>
       <tbody>
-        {bids.slice(0, 25).map((bidLine, index) => (
-          <tr key={`bid-${index}`}>
-            <PrizeCell>{bidLine[0]}</PrizeCell>
-            <StyledCell>{bidLine[1]}</StyledCell>
-            <StyledCell>{totals[index]}</StyledCell>
-          </tr>
-        ))}
+        {snapshot.bids ? (
+          snapshot.bids.slice(0, 25).map((bidLine: number[], index: number) => (
+            <tr key={`bid-${index}`}>
+              <PrizeCell>{bidLine[0]}</PrizeCell>
+              <StyledCell>{bidLine[1]}</StyledCell>
+              <StyledCell>{totals[index]}</StyledCell>
+            </tr>
+          ))
+        ) : (
+          <div>
+            <h3>Loading...</h3>
+          </div>
+        )}
       </tbody>
     </StyledTable>
   )
