@@ -1,10 +1,13 @@
 import WebSocketContextProvider from './websocketManager/contextProvider'
 import { Container } from './components/Container'
+import { FocusHandler } from './components/FocusHandler'
 
 function App() {
   return (
     <WebSocketContextProvider>
-      <Container />
+      <FocusHandler>
+        <Container />
+      </FocusHandler>
     </WebSocketContextProvider>
   )
 }
