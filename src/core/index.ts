@@ -1,4 +1,4 @@
-import { Snapshot, Asks, Bids, Delta } from './types'
+import { Asks, Bids, Delta } from './types'
 
 const fillTotals = (sizes: number[]) => {
   if (!sizes || sizes.length === 0) return []
