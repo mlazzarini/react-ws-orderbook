@@ -1,20 +1,23 @@
 import { FunctionComponent, useState, useEffect, useContext } from 'react'
 import styled from 'styled-components'
 import contextWebSocket from '../websocketManager/createContext'
-import { fillTotals, mergeAsks } from '../core'
+import { fillTotals, mergeAsks, sortAsks } from '../core'
 import { Asks } from '../core/types'
 
 const { WebSocketContext } = contextWebSocket
 
 const StyledTable = styled.table`
   border: 1px solid black;
+  width: 400px;
 `
 
 const StyledCell = styled.td`
+  width: 130px;
   border: 1px solid grey;
 `
 
 const PrizeCell = styled.td`
+  width: 130px;
   border: 1px solid grey;
   color: green;
 `
@@ -24,13 +27,10 @@ export const BuySide: FunctionComponent = () => {
   const [totals, setTotals] = useState(Array(25).fill(0))
   // TODO: move ordering of the snapshot to the websocket context provider
   const [orderedAsks, setOrderedAsks] = useState<Asks>(Array(25).fill([0, 0]))
-  // TODO: trim the displayed orders list to 25 (but we need to keep them all in memory)
 
   useEffect(() => {
     if (snapshot.asks) {
-      const sorted = snapshot.asks?.sort(
-        (ask1: number[], ask2: number[]) => ask2[0] - ask1[0]
-      )
+      const sorted = sortAsks(snapshot.asks)
       setOrderedAsks(sorted)
 
       // Update totals
@@ -41,7 +41,6 @@ export const BuySide: FunctionComponent = () => {
   }, [snapshot])
 
   useEffect(() => {
-    console.log('Got a new delta', delta.bids)
     if (delta.asks?.length > 0) {
       const updatedAsks = mergeAsks(orderedAsks, delta)
       setOrderedAsks(updatedAsks)
@@ -54,14 +53,16 @@ export const BuySide: FunctionComponent = () => {
   }, [delta])
 
   return (
-    <StyledTable style={{ width: 300 }}>
+    <StyledTable>
       <thead>
-        <th>Total</th>
-        <th>Size</th>
-        <th>Price</th>
+        <tr>
+          <th>Total</th>
+          <th>Size</th>
+          <th>Price</th>
+        </tr>
       </thead>
       <tbody>
-        {orderedAsks.map((askLine, index) => (
+        {orderedAsks.slice(0, 25).map((askLine, index) => (
           <tr key={`ask-${index}`}>
             <StyledCell>{totals[index]}</StyledCell>
             <StyledCell>{askLine[1]}</StyledCell>

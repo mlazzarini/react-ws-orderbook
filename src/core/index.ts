@@ -67,4 +67,4 @@ const mergeAsks = (asks: Asks, deltaMsg: Delta) => {
   return newAsks
 }
 
-export { fillTotals, mergeAsks, removeOrder, addOrUpdateOrder }
+export { fillTotals, mergeAsks, removeOrder, addOrUpdateOrder, sortAsks }

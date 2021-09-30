@@ -1,4 +1,3 @@
-import './App.css'
 import WebSocketContextProvider from './websocketManager/contextProvider'
 import { Container } from './components/Container'
 
