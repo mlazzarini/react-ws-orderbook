@@ -45,7 +45,7 @@ export const BuySide: FunctionComponent = () => {
       const totals = fillTotals(sizes)
       setTotals(totals)
     }
-  }, [delta])
+  }, [delta, snapshot.asks])
 
   return (
     <StyledTable>
