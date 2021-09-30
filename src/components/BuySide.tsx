@@ -1,7 +1,10 @@
-import { FunctionComponent, useState, useEffect } from 'react'
+import { FunctionComponent, useState, useEffect, useContext } from 'react'
 import styled from 'styled-components'
-import { snapshot } from '../mockData'
+import contextWebSocket from '../websocketManager/createContext'
 import { fillTotals } from '../core'
+import { Asks } from '../core/types'
+
+const { WebSocketContext } = contextWebSocket
 
 const StyledTable = styled.table`
   border: 1px solid black;
@@ -17,14 +20,23 @@ const PrizeCell = styled.td`
 `
 
 export const BuySide: FunctionComponent = () => {
-  const [totals, setTotals] = useState(Array(snapshot.numLevels).fill(0))
-  const orderedAsks = snapshot.asks.sort((ask1, ask2) => ask2[0] - ask1[0])
+  const { snapshot, delta } = useContext(WebSocketContext)
+  const [totals, setTotals] = useState(Array(25).fill(0))
+  const [orderedAsks, setOrderedAsks] = useState<Asks>(Array(25).fill([0, 0]))
 
   useEffect(() => {
-    const sizes = orderedAsks.map((bidLine) => bidLine[1])
-    const totals = fillTotals(sizes)
-    setTotals(totals)
-  }, [])
+    if (snapshot.asks) {
+      setOrderedAsks(
+        snapshot.asks?.sort(
+          (ask1: number[], ask2: number[]) => ask2[0] - ask1[0]
+        )
+      )
+      const sizes = snapshot?.asks?.map((bidLine: any) => bidLine[1])
+      const totals = fillTotals(sizes)
+      setTotals(totals)
+    }
+  }, [snapshot])
+
   return (
     <StyledTable style={{ width: 300 }}>
       <thead>
