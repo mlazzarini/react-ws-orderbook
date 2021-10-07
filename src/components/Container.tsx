@@ -19,11 +19,12 @@ const OrderBookWrapper = styled.div`
 `
 
 export const Container: FunctionComponent = () => {
-  const { connect, close, spread } = useContext(WebSocketContext)
+  const { connect, close, spread, toggleFeed } = useContext(WebSocketContext)
   return (
     <MainWrapper>
       <button onClick={connect}>Connect</button>
       <button onClick={close}>Close</button>
+      <button onClick={toggleFeed}>Toggle Feed</button>
       <h2>Order book:</h2>
       <span>Spread: {spread}</span>
       <OrderBookWrapper>
