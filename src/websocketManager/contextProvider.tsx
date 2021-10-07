@@ -1,12 +1,20 @@
-import { FunctionComponent, useState } from 'react'
+import { FunctionComponent, useState, useEffect } from 'react'
+import { Snapshot } from '../core/types'
 import webSocketContext from './createContext'
 
 const { WebSocketContext } = webSocketContext
 
 const WebSocketContextProvider: FunctionComponent = ({ children }) => {
   const [socket, setSocket] = useState<WebSocket>()
-  const [snapshot, setSnapshot] = useState({})
+  const [snapshot, setSnapshot] = useState<Snapshot | undefined>()
   const [delta, setDelta] = useState({})
+  const [spread, setSpread] = useState(0)
+
+  useEffect(() => {
+    const topAsk = snapshot?.asks ? snapshot.asks[0][0] : 0
+    const topBid = snapshot?.bids ? snapshot.bids[0][0] : 0
+    setSpread(topAsk - topBid)
+  }, [snapshot?.asks, snapshot?.bids])
 
   const connect = () => {
     const newSocket = new WebSocket('wss://www.cryptofacilities.com/ws/v1')
@@ -43,6 +51,7 @@ const WebSocketContextProvider: FunctionComponent = ({ children }) => {
         close,
         snapshot,
         delta,
+        spread,
       }}>
       {children}
     </WebSocketContext.Provider>

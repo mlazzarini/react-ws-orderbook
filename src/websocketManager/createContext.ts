@@ -6,6 +6,7 @@ export interface WebSocketContextType {
   close: () => void
   snapshot: any //Snapshot
   delta: any //Delta
+  spread: number
 }
 
 const WebSocketContext = createContext<WebSocketContextType>({
@@ -13,6 +14,7 @@ const WebSocketContext = createContext<WebSocketContextType>({
   close: () => {},
   snapshot: {},
   delta: {},
+  spread: 0,
 })
 
 export default { WebSocketContext }

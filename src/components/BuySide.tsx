@@ -26,7 +26,7 @@ export const BuySide: FunctionComponent = () => {
   const [totals, setTotals] = useState(Array(25).fill(0))
 
   useEffect(() => {
-    if (snapshot.asks) {
+    if (snapshot?.asks) {
       sortAsks(snapshot.asks)
 
       // Update totals
@@ -34,7 +34,7 @@ export const BuySide: FunctionComponent = () => {
       const totals = fillTotals(sizes)
       setTotals(totals)
     }
-  }, [snapshot.asks])
+  }, [snapshot?.asks])
 
   useEffect(() => {
     if (delta.asks?.length > 0) {
@@ -45,7 +45,7 @@ export const BuySide: FunctionComponent = () => {
       const totals = fillTotals(sizes)
       setTotals(totals)
     }
-  }, [delta, snapshot.asks])
+  }, [delta, snapshot?.asks])
 
   return (
     <StyledTable>
@@ -57,7 +57,7 @@ export const BuySide: FunctionComponent = () => {
         </tr>
       </thead>
       <tbody>
-        {snapshot.asks ? (
+        {snapshot?.asks ? (
           snapshot.asks.slice(0, 25).map((askLine: number[], index: number) => (
             <tr key={`ask-${index}`}>
               <StyledCell>{totals[index]}</StyledCell>

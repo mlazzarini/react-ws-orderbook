@@ -26,7 +26,7 @@ export const SellSide: FunctionComponent = () => {
   const [totals, setTotals] = useState(Array(25).fill(0))
 
   useEffect(() => {
-    if (snapshot.bids) {
+    if (snapshot?.bids) {
       sortBids(snapshot.bids)
 
       // Update totals
@@ -34,7 +34,7 @@ export const SellSide: FunctionComponent = () => {
       const totals = fillTotals(sizes)
       setTotals(totals)
     }
-  }, [snapshot.bids])
+  }, [snapshot?.bids])
 
   useEffect(() => {
     if (delta.bids?.length > 0) {
@@ -45,7 +45,7 @@ export const SellSide: FunctionComponent = () => {
       const totals = fillTotals(sizes)
       setTotals(totals)
     }
-  }, [delta, snapshot.bids])
+  }, [delta, snapshot?.bids])
 
   return (
     <StyledTable>
@@ -57,7 +57,7 @@ export const SellSide: FunctionComponent = () => {
         </tr>
       </thead>
       <tbody>
-        {snapshot.bids ? (
+        {snapshot?.bids ? (
           snapshot.bids.slice(0, 25).map((bidLine: number[], index: number) => (
             <tr key={`bid-${index}`}>
               <PrizeCell>{bidLine[0]}</PrizeCell>
