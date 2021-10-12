@@ -1,6 +1,5 @@
 import { FunctionComponent, useState, useEffect, useContext } from 'react'
 import styled from 'styled-components'
-import { BarChart, Bar } from 'recharts'
 import contextWebSocket from '../websocketManager/createContext'
 import { fillTotals, mergeDelta, sortAsks } from '../core'
 
@@ -9,15 +8,6 @@ const { WebSocketContext } = contextWebSocket
 const StyledTable = styled.table`
   border: 1px solid black;
   width: 400px;
-  z-index: 2;
-`
-
-const ChartContainer = styled.div`
-  position: relative;
-  top: 0px;
-  left: 400px;
-  width: 400px;
-  height: 630px;
 `
 
 const StyledCell = styled.td`
@@ -57,45 +47,30 @@ export const BuySide: FunctionComponent = () => {
     }
   }, [delta, snapshot?.asks])
 
-  const chartData = totals.map((total: number) => {
-    return { ask: total }
-  })
-
   return (
-    <>
-      <ChartContainer>
-        {chartData && (
-          <BarChart width={400} height={630} data={chartData}>
-            <Bar dataKey="ask" fill="#ff7300" />
-          </BarChart>
+    <StyledTable>
+      <thead>
+        <tr>
+          <th>Total</th>
+          <th>Size</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        {snapshot?.asks ? (
+          snapshot.asks.slice(0, 25).map((askLine: number[], index: number) => (
+            <tr key={`ask-${index}`}>
+              <StyledCell>{totals[index]}</StyledCell>
+              <StyledCell>{askLine[1]}</StyledCell>
+              <PrizeCell>{askLine[0]}</PrizeCell>
+            </tr>
+          ))
+        ) : (
+          <div>
+            <h3>Loading...</h3>
+          </div>
         )}
-      </ChartContainer>
-      <StyledTable>
-        <thead>
-          <tr>
-            <th>Total</th>
-            <th>Size</th>
-            <th>Price</th>
-          </tr>
-        </thead>
-        <tbody>
-          {snapshot?.asks ? (
-            snapshot.asks
-              .slice(0, 25)
-              .map((askLine: number[], index: number) => (
-                <tr key={`ask-${index}`}>
-                  <StyledCell>{totals[index]}</StyledCell>
-                  <StyledCell>{askLine[1]}</StyledCell>
-                  <PrizeCell>{askLine[0]}</PrizeCell>
-                </tr>
-              ))
-          ) : (
-            <div>
-              <h3>Loading...</h3>
-            </div>
-          )}
-        </tbody>
-      </StyledTable>
-    </>
+      </tbody>
+    </StyledTable>
   )
 }
