@@ -1,5 +1,4 @@
 import { createContext } from 'react'
-import { Delta, Snapshot } from '../core/types'
 
 export interface WebSocketContextType {
   connect: () => void
