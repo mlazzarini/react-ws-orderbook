@@ -18,4 +18,5 @@ const WebSocketContext = createContext<WebSocketContextType>({
   toggleFeed: () => {},
 })
 
-export default { WebSocketContext }
+const WSContext = { WebSocketContext }
+export default WSContext
