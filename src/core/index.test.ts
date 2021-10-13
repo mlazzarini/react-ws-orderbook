@@ -3,6 +3,7 @@ import {
   removeOrder,
   addOrUpdateAsk,
   addOrUpdateBid,
+  computePercentageValue,
 } from './index'
 
 describe('test fillTotals', () => {
@@ -178,5 +179,24 @@ describe('test addOrUpdateBid', () => {
       [13, 7],
       [15, 5],
     ])
+  })
+})
+
+describe('test computePercentageValue', () => {
+  const someMidNumbers = Array(20).fill(600)
+  const totals = [100, 500, ...someMidNumbers, 900, 910, 1000]
+  it('output is 10%', () => {
+    const result = computePercentageValue(totals, 0)
+    expect(result).toEqual(10)
+  })
+
+  it('output is 50%', () => {
+    const result = computePercentageValue(totals, 1)
+    expect(result).toEqual(50)
+  })
+
+  it('output is 100%', () => {
+    const result = computePercentageValue(totals, 24)
+    expect(result).toEqual(100)
   })
 })

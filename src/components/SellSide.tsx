@@ -1,13 +1,30 @@
 import { FunctionComponent, useState, useEffect, useContext } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import contextWebSocket from '../websocketManager/createContext'
-import { fillTotals, mergeDelta, sortBids } from '../core'
+import {
+  fillTotals,
+  mergeDelta,
+  sortBids,
+  computePercentageValue,
+} from '../core'
 
 const { WebSocketContext } = contextWebSocket
+
+interface RowProps {
+  percentageValue: number
+}
 
 const StyledTable = styled.table`
   border: 1px solid black;
   width: 400px;
+`
+
+const StyledRow = styled.tr<RowProps>`
+  ${({ percentageValue }) => {
+    return css`
+      background: linear-gradient(to right, pink ${percentageValue}%, white 0%);
+    `
+  }}
 `
 
 const StyledCell = styled.td`
@@ -58,13 +75,16 @@ export const SellSide: FunctionComponent = () => {
       </thead>
       <tbody>
         {snapshot?.bids ? (
-          snapshot.bids.slice(0, 25).map((bidLine: number[], index: number) => (
-            <tr key={`bid-${index}`}>
-              <PrizeCell>{bidLine[0]}</PrizeCell>
-              <StyledCell>{bidLine[1]}</StyledCell>
-              <StyledCell>{totals[index]}</StyledCell>
-            </tr>
-          ))
+          snapshot.bids.slice(0, 25).map((bidLine: number[], index: number) => {
+            const percentageValue = computePercentageValue(totals, index)
+            return (
+              <StyledRow percentageValue={percentageValue} key={`bid-${index}`}>
+                <PrizeCell>{bidLine[0]}</PrizeCell>
+                <StyledCell>{bidLine[1]}</StyledCell>
+                <StyledCell>{totals[index]}</StyledCell>
+              </StyledRow>
+            )
+          })
         ) : (
           <div>
             <h3>Loading...</h3>

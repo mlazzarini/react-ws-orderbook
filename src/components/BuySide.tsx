@@ -1,13 +1,34 @@
 import { FunctionComponent, useState, useEffect, useContext } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import contextWebSocket from '../websocketManager/createContext'
-import { fillTotals, mergeDelta, sortAsks } from '../core'
+import {
+  fillTotals,
+  mergeDelta,
+  sortAsks,
+  computePercentageValue,
+} from '../core'
 
 const { WebSocketContext } = contextWebSocket
+
+interface RowProps {
+  percentageValue: number
+}
 
 const StyledTable = styled.table`
   border: 1px solid black;
   width: 400px;
+`
+
+const StyledRow = styled.tr<RowProps>`
+  ${({ percentageValue }) => {
+    return css`
+      background: linear-gradient(
+        to left,
+        #00800080 ${percentageValue}%,
+        white 0%
+      );
+    `
+  }}
 `
 
 const StyledCell = styled.td`
@@ -58,13 +79,16 @@ export const BuySide: FunctionComponent = () => {
       </thead>
       <tbody>
         {snapshot?.asks ? (
-          snapshot.asks.slice(0, 25).map((askLine: number[], index: number) => (
-            <tr key={`ask-${index}`}>
-              <StyledCell>{totals[index]}</StyledCell>
-              <StyledCell>{askLine[1]}</StyledCell>
-              <PrizeCell>{askLine[0]}</PrizeCell>
-            </tr>
-          ))
+          snapshot.asks.slice(0, 25).map((askLine: number[], index: number) => {
+            const percentageValue = computePercentageValue(totals, index)
+            return (
+              <StyledRow percentageValue={percentageValue} key={`ask-${index}`}>
+                <StyledCell>{totals[index]}</StyledCell>
+                <StyledCell>{askLine[1]}</StyledCell>
+                <PrizeCell>{askLine[0]}</PrizeCell>
+              </StyledRow>
+            )
+          })
         ) : (
           <div>
             <h3>Loading...</h3>

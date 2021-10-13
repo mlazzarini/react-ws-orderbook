@@ -96,6 +96,11 @@ const mergeDelta = (
   return updatedOrders
 }
 
+const computePercentageValue = (totals: number[], index: number) => {
+  const maxValue = totals[24]
+  return Math.round((100 * totals[index]) / maxValue)
+}
+
 export {
   fillTotals,
   mergeDelta,
@@ -104,4 +109,5 @@ export {
   sortAsks,
   addOrUpdateBid,
   sortBids,
+  computePercentageValue,
 }
