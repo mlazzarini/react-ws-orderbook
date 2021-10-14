@@ -14,12 +14,24 @@ interface RowProps {
   percentageValue: number
 }
 
-const StyledTable = styled.table`
+const StyledTable = styled.div`
   border: 1px solid white;
   width: 400px;
 `
 
-const StyledRow = styled.tr<RowProps>`
+const StyledHeadRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  font-variant: small-caps;
+  font-weight: 900;
+`
+
+const StyledHeadCell = styled.div`
+  flex: 1;
+  border: 1px solid ${({ theme }) => theme.colors.text}; ;
+`
+
+const StyledRow = styled.div<RowProps>`
   ${({
     percentageValue,
     theme: {
@@ -27,6 +39,8 @@ const StyledRow = styled.tr<RowProps>`
     },
   }) => {
     return css`
+      display: flex;
+      flex-direction: row;
       background: linear-gradient(
         to left,
         ${darkGreen} ${percentageValue}%,
@@ -36,19 +50,19 @@ const StyledRow = styled.tr<RowProps>`
   }}
 `
 
-const StyledCell = styled.td`
-  width: 130px;
+const StyledCell = styled.div`
+  flex: 1;
   border: 1px solid white;
 `
 
-const PrizeCell = styled.td`
+const PrizeCell = styled.div`
   ${({
     theme: {
       colors: { lightGreen },
     },
   }) => {
     return css`
-      width: 130px;
+      flex: 1;
       border: 1px solid white;
       color: ${lightGreen};
     `
@@ -83,14 +97,12 @@ export const BuySide: FunctionComponent = () => {
 
   return (
     <StyledTable>
-      <thead>
-        <tr>
-          <th>Total</th>
-          <th>Size</th>
-          <th>Price</th>
-        </tr>
-      </thead>
-      <tbody>
+      <StyledHeadRow>
+        <StyledHeadCell>Total</StyledHeadCell>
+        <StyledHeadCell>Size</StyledHeadCell>
+        <StyledHeadCell>Price</StyledHeadCell>
+      </StyledHeadRow>
+      <div>
         {snapshot?.asks ? (
           snapshot.asks.slice(0, 25).map((askLine: number[], index: number) => {
             const percentageValue = computePercentageValue(totals, index)
@@ -107,7 +119,7 @@ export const BuySide: FunctionComponent = () => {
             <h3>Loading...</h3>
           </div>
         )}
-      </tbody>
+      </div>
     </StyledTable>
   )
 }
