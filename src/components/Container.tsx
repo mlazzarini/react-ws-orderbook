@@ -1,7 +1,6 @@
 import { FunctionComponent, useContext } from 'react'
 import styled from 'styled-components'
-import { BuySide } from './BuySide'
-import { SellSide } from './SellSide'
+import { TableSkeleton } from './TableSkeleton'
 import contextWebSocket from '../websocketManager/createContext'
 
 const { WebSocketContext } = contextWebSocket
@@ -19,9 +18,13 @@ const StyledSpread = styled.div`
 `
 
 const OrderBookWrapper = styled.div`
+  text-align: center;
   display: flex;
   flex-direction: row;
-  text-align: center;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `
 
 export const Container: FunctionComponent = () => {
@@ -32,8 +35,8 @@ export const Container: FunctionComponent = () => {
       <button onClick={toggleFeed}>Toggle Feed</button>
       <StyledSpread>Spread: {spread}</StyledSpread>
       <OrderBookWrapper>
-        <BuySide />
-        <SellSide />
+        <TableSkeleton side="buy" />
+        <TableSkeleton side="sell" />
       </OrderBookWrapper>
     </MainWrapper>
   )

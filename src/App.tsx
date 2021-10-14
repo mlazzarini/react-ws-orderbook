@@ -9,6 +9,7 @@ const GlobalStyle = createGlobalStyle`
     color: ${myTheme.colors.text};
     background-color: ${myTheme.colors.background};
     font-family:'Roboto', sans-serif;
+    font-size: 12px;
   }
   
   button {
@@ -23,10 +24,8 @@ const GlobalStyle = createGlobalStyle`
     font-weight: 900;
     &:hover{
       background-color: ${myTheme.colors.accentDark};
-
     }
   }
-
 `
 
 function App() {

@@ -14,23 +14,6 @@ interface RowProps {
   percentageValue: number
 }
 
-const StyledTable = styled.div`
-  border: 1px solid white;
-  width: 400px;
-`
-
-const StyledHeadRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  font-variant: small-caps;
-  font-weight: 900;
-`
-
-const StyledHeadCell = styled.div`
-  flex: 1;
-  border: 1px solid ${({ theme }) => theme.colors.text}; ;
-`
-
 const StyledRow = styled.div<RowProps>`
   ${({
     percentageValue,
@@ -52,18 +35,18 @@ const StyledRow = styled.div<RowProps>`
 
 const StyledCell = styled.div`
   flex: 1;
-  border: 1px solid white;
+  border: 1px solid ${({ theme }) => theme.colors.text};
 `
 
 const PrizeCell = styled.div`
   ${({
     theme: {
-      colors: { lightGreen },
+      colors: { lightGreen, text },
     },
   }) => {
     return css`
       flex: 1;
-      border: 1px solid white;
+      border: 1px solid ${text};
       color: ${lightGreen};
     `
   }}
@@ -96,30 +79,23 @@ export const BuySide: FunctionComponent = () => {
   }, [delta, snapshot?.asks])
 
   return (
-    <StyledTable>
-      <StyledHeadRow>
-        <StyledHeadCell>Total</StyledHeadCell>
-        <StyledHeadCell>Size</StyledHeadCell>
-        <StyledHeadCell>Price</StyledHeadCell>
-      </StyledHeadRow>
-      <div>
-        {snapshot?.asks ? (
-          snapshot.asks.slice(0, 25).map((askLine: number[], index: number) => {
-            const percentageValue = computePercentageValue(totals, index)
-            return (
-              <StyledRow percentageValue={percentageValue} key={`ask-${index}`}>
-                <StyledCell>{totals[index]}</StyledCell>
-                <StyledCell>{askLine[1]}</StyledCell>
-                <PrizeCell>{askLine[0]}</PrizeCell>
-              </StyledRow>
-            )
-          })
-        ) : (
-          <div>
-            <h3>Loading...</h3>
-          </div>
-        )}
-      </div>
-    </StyledTable>
+    <>
+      {snapshot?.asks ? (
+        snapshot.asks.slice(0, 25).map((askLine: number[], index: number) => {
+          const percentageValue = computePercentageValue(totals, index)
+          return (
+            <StyledRow percentageValue={percentageValue} key={`ask-${index}`}>
+              <StyledCell>{totals[index]}</StyledCell>
+              <StyledCell>{askLine[1]}</StyledCell>
+              <PrizeCell>{askLine[0]}</PrizeCell>
+            </StyledRow>
+          )
+        })
+      ) : (
+        <div>
+          <h3>Loading...</h3>
+        </div>
+      )}
+    </>
   )
 }

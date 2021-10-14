@@ -14,11 +14,6 @@ interface RowProps {
   percentageValue: number
 }
 
-const StyledTable = styled.table`
-  border: 1px solid white;
-  width: 400px;
-`
-
 const StyledRow = styled.tr<RowProps>`
   ${({
     percentageValue,
@@ -27,6 +22,8 @@ const StyledRow = styled.tr<RowProps>`
     },
   }) => {
     return css`
+      display: flex;
+      flex-direction: row;
       background: linear-gradient(
         to right,
         ${darkRed} ${percentageValue}%,
@@ -37,19 +34,19 @@ const StyledRow = styled.tr<RowProps>`
 `
 
 const StyledCell = styled.td`
-  width: 130px;
-  border: 1px solid white;
+  flex: 1;
+  border: 1px solid ${({ theme }) => theme.colors.text};
 `
 
 const PrizeCell = styled.td`
   ${({
     theme: {
-      colors: { lightRed },
+      colors: { lightRed, text },
     },
   }) => {
     return css`
-      width: 130px;
-      border: 1px solid white;
+      flex: 1;
+      border: 1px solid ${text};
       color: ${lightRed};
     `
   }}
@@ -82,32 +79,23 @@ export const SellSide: FunctionComponent = () => {
   }, [delta, snapshot?.bids])
 
   return (
-    <StyledTable>
-      <thead>
-        <tr>
-          <th>Price</th>
-          <th>Size</th>
-          <th>Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        {snapshot?.bids ? (
-          snapshot.bids.slice(0, 25).map((bidLine: number[], index: number) => {
-            const percentageValue = computePercentageValue(totals, index)
-            return (
-              <StyledRow percentageValue={percentageValue} key={`bid-${index}`}>
-                <PrizeCell>{bidLine[0]}</PrizeCell>
-                <StyledCell>{bidLine[1]}</StyledCell>
-                <StyledCell>{totals[index]}</StyledCell>
-              </StyledRow>
-            )
-          })
-        ) : (
-          <div>
-            <h3>Loading...</h3>
-          </div>
-        )}
-      </tbody>
-    </StyledTable>
+    <>
+      {snapshot?.bids ? (
+        snapshot.bids.slice(0, 25).map((bidLine: number[], index: number) => {
+          const percentageValue = computePercentageValue(totals, index)
+          return (
+            <StyledRow percentageValue={percentageValue} key={`bid-${index}`}>
+              <PrizeCell>{bidLine[0]}</PrizeCell>
+              <StyledCell>{bidLine[1]}</StyledCell>
+              <StyledCell>{totals[index]}</StyledCell>
+            </StyledRow>
+          )
+        })
+      ) : (
+        <div>
+          <h3>Loading...</h3>
+        </div>
+      )}
+    </>
   )
 }
