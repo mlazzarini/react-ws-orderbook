@@ -12,6 +12,12 @@ const MainWrapper = styled.div`
   align-items: center;
 `
 
+const StyledSpread = styled.div`
+  font-variant: small-caps;
+  line-height: 16px;
+  margin: 8px;
+`
+
 const OrderBookWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -19,14 +25,12 @@ const OrderBookWrapper = styled.div`
 `
 
 export const Container: FunctionComponent = () => {
-  const { connect, close, spread, toggleFeed } = useContext(WebSocketContext)
+  const { spread, toggleFeed } = useContext(WebSocketContext)
   return (
     <MainWrapper>
-      <button onClick={connect}>Connect</button>
-      <button onClick={close}>Close</button>
+      <h2>Order book</h2>
       <button onClick={toggleFeed}>Toggle Feed</button>
-      <h2>Order book:</h2>
-      <span>Spread: {spread}</span>
+      <StyledSpread>Spread: {spread}</StyledSpread>
       <OrderBookWrapper>
         <BuySide />
         <SellSide />

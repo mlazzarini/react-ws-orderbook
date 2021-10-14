@@ -15,27 +15,44 @@ interface RowProps {
 }
 
 const StyledTable = styled.table`
-  border: 1px solid black;
+  border: 1px solid white;
   width: 400px;
 `
 
 const StyledRow = styled.tr<RowProps>`
-  ${({ percentageValue }) => {
+  ${({
+    percentageValue,
+    theme: {
+      colors: { darkRed, background },
+    },
+  }) => {
     return css`
-      background: linear-gradient(to right, pink ${percentageValue}%, white 0%);
+      background: linear-gradient(
+        to right,
+        ${darkRed} ${percentageValue}%,
+        ${background} 0%
+      );
     `
   }}
 `
 
 const StyledCell = styled.td`
   width: 130px;
-  border: 1px solid grey;
+  border: 1px solid white;
 `
 
 const PrizeCell = styled.td`
-  width: 130px;
-  border: 1px solid grey;
-  color: red;
+  ${({
+    theme: {
+      colors: { lightRed },
+    },
+  }) => {
+    return css`
+      width: 130px;
+      border: 1px solid white;
+      color: ${lightRed};
+    `
+  }}
 `
 
 export const SellSide: FunctionComponent = () => {

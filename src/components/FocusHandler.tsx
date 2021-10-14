@@ -18,7 +18,7 @@ const Overlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(255, 255, 255, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -27,8 +27,7 @@ const Overlay = styled.div`
 const PromptMessage = styled.div`
   width: 200px;
   height: 100px;
-  background-color: #ffffff;
-  border: 1px solid black;
+  background-color: ${({ theme }) => theme.colors.background};
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -69,7 +68,7 @@ export const FocusHandler: FunctionComponent = ({ children }) => {
             <Line>Disconnected.</Line>
             <Line>Ready to go again?</Line>
             <Line>
-              <button onClick={onReconnect}>YES</button>
+              <button onClick={onReconnect}>Yes</button>
             </Line>
           </PromptMessage>
         </Overlay>
